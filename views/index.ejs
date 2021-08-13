@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/milligram.min.css' />
+    <script src="/javascripts/axios.min.js"></script>
+    <script>
+      function getSnapshot () {
+        const website = document.querySelector('#website').value;
+        if(website){
+          axios.post('/getSnapshot', {
+            website,
+          })
+          .then(function (response) {
+            const content = response?.data?.data || '';
+            setIframeContent(content, website)
+          })
+          .catch(function (error) {
+            setIframeContent(error);
+          });
+        }
+      }
+
+      function setIframeHeight () {
+        const iframe = document.getElementById('snapshot');
+        const { scrollHeight: bHeight, scrollWidth: boxWidth } = iframe.contentWindow.document.body;
+        const { scrollHeight: dHeight, scrollWidth: dWidth } = iframe.contentWindow.document.documentElement;
+        const width = Math.max(boxWidth, dWidth);
+        const height = Math.max(bHeight, dHeight);
+        if (width && height) {
+          iframe.height = height;
+          // iframe.width = width;
+        }
+      };
+
+      function setIframeContent(content, website){
+        let base = '';
+        if(website){
+          try{
+            const url = new URL(website);
+            base = `<base href="${url.origin}" />`;
+          }catch(e){
+            console.log(e);
+          }
+        }
+        document.querySelector('#snapshot').srcdoc = `${base}${content}`;
+      }
+    </script>
+  </head>
+  <body>
+    <div style="display: flex; border-bottom: 1px solid #9b4dca; margin-bottom: 20px;">
+      <input type="text" placeholder="请输入http或https开头的URL" id="website">
+      <a class="button" href="#" onclick="getSnapshot()">网站快照</a>
+    </div>
+    <div>
+      <iframe
+        id="snapshot"
+        title="快照"
+        sandbox="allow-same-origin allow-popups allow-downloads"
+        width="100%"
+        frameBorder="0"
+        height="800"
+        onload="setIframeHeight()"
+      />
+    </div>
+  </body>
+</html>
+
+
