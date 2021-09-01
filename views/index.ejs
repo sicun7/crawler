@@ -6,15 +6,17 @@
     <link rel='stylesheet' href='/stylesheets/milligram.min.css' />
     <script src="/javascripts/axios.min.js"></script>
     <script>
-      function getSnapshot () {
+      function getSnapshot (type) {
         const website = document.querySelector('#website').value;
+        setIframeContent('加载中, 请稍后...');
         if(website){
           axios.post('/getSnapshot', {
             website,
+            type
           })
           .then(function (response) {
             const content = response?.data?.data || '';
-            setIframeContent(content, website)
+            setIframeContent(content, website, type)
           })
           .catch(function (error) {
             setIframeContent(error);
@@ -34,12 +36,15 @@
         }
       };
 
-      function setIframeContent(content, website){
+      function setIframeContent(content, website, type){
         let base = '';
         if(website){
           try{
             const url = new URL(website);
             base = `<base href="${url.origin}" />`;
+            if(type === 'PIC'){
+              content = `<img src="${content}" />`;
+            }
           }catch(e){
             console.log(e);
           }
@@ -51,7 +56,8 @@
   <body>
     <div style="display: flex; border-bottom: 1px solid #9b4dca; margin-bottom: 20px;">
       <input type="text" placeholder="请输入http或https开头的URL" id="website">
-      <a class="button" href="#" onclick="getSnapshot()">网站快照</a>
+      <a class="button" href="#" onclick="getSnapshot()">网站首页</a>
+      <a class="button" href="#" onclick="getSnapshot('PIC')" style="margin-left: 20px;">网站快照</a>
     </div>
     <div>
       <iframe

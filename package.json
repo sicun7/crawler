@@ -6,7 +6,9 @@
     "start": "node bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
     "prd": "pm2 start bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "shot": "node utils/screenshots",
+    "transfer": "node utils/transferBase64"
   },
   "dependencies": {
     "debug": "^4.1.1",
@@ -24,6 +26,9 @@
   },
   "devDependencies": {
     "milligram": "^1.4.1",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "puppeteer": "^10.2.0",
+    "screenshot-desktop": "^1.12.7",
+    "util": "^0.12.4"
   }
 }

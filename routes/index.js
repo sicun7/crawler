@@ -1,6 +1,7 @@
 const router = require("koa-router")();
 const request = require("request");
-const http = require('../utils/http');
+const http = require("../utils/http");
+const { shot } = require("../utils/screenshots");
 
 router.get("/", async (ctx, next) => {
   await ctx.render("index", {
@@ -20,9 +21,15 @@ router.get("/json", async (ctx, next) => {
 
 router.post("/getSnapshot", async (ctx, next) => {
   const website = ctx.request.body.website;
-  const data = await http.get(website);
+  const type = ctx.request.body.type;
+  let data = "";
+  if (type === "PIC") {
+    data = await shot(website);
+  } else {
+    data = await http.get(website);
+  }
   ctx.body = {
-    data: data,
+    data,
   };
 });
 
