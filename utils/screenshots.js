@@ -27,7 +27,7 @@ const waitTime = (n) => new Promise((r) => setTimeout(r, n));
 const shot = async (url) => {
   const fileUrl = "./temp/shot.png";
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
   const page = await browser.newPage();
   await page.goto(url);
   await page.setViewport({
