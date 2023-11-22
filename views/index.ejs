@@ -2,62 +2,81 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel='stylesheet' href='/stylesheets/milligram.min.css' />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/milligram.min.css" />
     <script src="/javascripts/axios.min.js"></script>
     <script>
-      function getSnapshot (type) {
-        const website = document.querySelector('#website').value;
-        setIframeContent('加载中, 请稍后...');
-        if(website){
-          axios.post('/getSnapshot', {
-            website,
-            type
-          })
-          .then(function (response) {
-            const content = response?.data?.data || '';
-            setIframeContent(content, website, type)
-          })
-          .catch(function (error) {
-            setIframeContent(error);
-          });
+      function getSnapshot(type) {
+        const website = document.querySelector("#website").value;
+        setIframeContent("加载中, 请稍后...");
+        if (website) {
+          axios
+            .post("/getSnapshot", {
+              website,
+              type,
+            })
+            .then(function (response) {
+              const content = response?.data?.data || "";
+              setIframeContent(content, website, type);
+            })
+            .catch(function (error) {
+              setIframeContent(error);
+            });
         }
       }
 
-      function setIframeHeight () {
-        const iframe = document.getElementById('snapshot');
-        const { scrollHeight: bHeight, scrollWidth: boxWidth } = iframe.contentWindow.document.body;
-        const { scrollHeight: dHeight, scrollWidth: dWidth } = iframe.contentWindow.document.documentElement;
+      function setIframeHeight() {
+        const iframe = document.getElementById("snapshot");
+        const { scrollHeight: bHeight, scrollWidth: boxWidth } =
+          iframe.contentWindow.document.body;
+        const { scrollHeight: dHeight, scrollWidth: dWidth } =
+          iframe.contentWindow.document.documentElement;
         const width = Math.max(boxWidth, dWidth);
         const height = Math.max(bHeight, dHeight);
         if (width && height) {
           iframe.height = height;
           // iframe.width = width;
         }
-      };
+      }
 
-      function setIframeContent(content, website, type){
-        let base = '';
-        if(website){
-          try{
+      function setIframeContent(content, website, type) {
+        let base = "";
+        if (website) {
+          try {
             const url = new URL(website);
             base = `<base href="${url.origin}" />`;
-            if(type === 'PIC'){
+            if (type === "PIC") {
               content = `<img src="${content}" />`;
             }
-          }catch(e){
+          } catch (e) {
             console.log(e);
           }
         }
-        document.querySelector('#snapshot').srcdoc = `${base}${content}`;
+        document.querySelector("#snapshot").srcdoc = `${base}${content}`;
       }
     </script>
   </head>
   <body>
-    <div style="display: flex; border-bottom: 1px solid #9b4dca; margin-bottom: 20px;">
-      <input type="text" placeholder="请输入http或https开头的URL" id="website">
+    <div
+      style="
+        display: flex;
+        border-bottom: 1px solid #9b4dca;
+        margin-bottom: 20px;
+      "
+    >
+      <input
+        type="text"
+        placeholder="请输入http或https开头的URL"
+        id="website"
+      />
       <a class="button" href="#" onclick="getSnapshot()">网站首页</a>
-      <a class="button" href="#" onclick="getSnapshot('PIC')" style="margin-left: 20px;">网站快照</a>
+      <a
+        class="button"
+        href="#"
+        onclick="getSnapshot('PIC')"
+        style="margin-left: 20px"
+        >网站快照</a
+      >
     </div>
     <div>
       <iframe
@@ -72,5 +91,3 @@
     </div>
   </body>
 </html>
-
-
