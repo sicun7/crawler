@@ -41,6 +41,8 @@ router.post("/encrypt", async (ctx, next) => {
   let encryptData = sm2.doEncrypt(data, publicKey, cipherMode); // 加密结果
   ctx.body = {
     code: 200,
+    timestramp,
+    pwd: data,
     encryptPwd: encryptData,
   };
 });
