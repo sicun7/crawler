@@ -18,6 +18,10 @@ router.post("/encrypt", async (ctx, next) => {
       msg: "密码不能为空",
     });
   }
+  let timestramp = await http.get(
+    `https://paicc-core.pingan.com.cn/paicc-core-web/webapi/getCurrentTimeMillis.do?_=${new Date().getTime()}`
+  );
+  timestramp += "";
   let pwdlen = pwd.length;
   if (pwdlen < 10) pwdlen = "0" + pwdlen;
   // 已知的X和Y坐标
@@ -28,7 +32,7 @@ router.post("/encrypt", async (ctx, next) => {
   // 将X和Y坐标转换为16进制字符串，然后拼接在一起形成公钥
   const publicKey = "04" + localEccX + localEccY;
   // 要加密的数据
-  const data = `13${new Date().getTime()}${pwdlen}${pwd}`;
+  const data = `${timestramp.length}${timestramp}${pwdlen}${pwd}`;
   // 使用公钥进行加密
   // const cipherText = sm2.doEncrypt(data, publicKey, "utf8", {
   //   cipherMode: 1, // 使用C1C3C2模式
